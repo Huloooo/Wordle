@@ -4,26 +4,49 @@ import random
 import json
 import os
 from dotenv import load_dotenv
+import logging
 
 app = Flask(__name__)
 CORS(app)
 load_dotenv()
 
-# Load word list
-try:
-    with open('word_list.txt', 'r') as f:
-        WORD_LIST = [word.strip().upper() for word in f.readlines() if len(word.strip()) == 5]
-    print(f"Loaded {len(WORD_LIST)} valid 5-letter words from word_list.txt")
-except Exception as e:
-    print(f"Error loading word list: {e}")
-    # Fallback words - all 5 letters
-    WORD_LIST = ['APPLE', 'BEACH', 'CHAIR', 'DANCE', 'EAGLE', 'FLAME', 'GRAPE', 'HOUSE', 'IMAGE', 'JUICE']
-    print("Using fallback word list")
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-@app.route('/api/word')
+# List of complex 5-letter words for hardcore mode
+HARDCORE_WORDS = [
+    'ABYSS', 'CYNIC', 'EPOCH', 'FJORD', 'GLEAN',  # Deep, profound
+    'HAUTE', 'IDYLL', 'JOUST', 'KNAVE', 'LYMPH',  # High fashion
+    'MYRRH', 'NYMPH', 'OZONE', 'PHYLA', 'QUARK',  # Mythological being
+    'RHYME', 'SYNOD', 'THYME', 'USURP', 'VYING',  # Subatomic particle
+    'WIGHT', 'XENON', 'YACHT', 'ZESTY'  # Luxury boat
+]
+
+# Load word list
+with open('word_list.txt', 'r') as f:
+    words = [word.strip().upper() for word in f.readlines()]
+    words = [word for word in words if len(word) == 5]
+    logger.info(f"Loaded {len(words)} valid 5-letter words from word_list.txt")
+
+@app.route('/api/word', methods=['GET'])
 def get_word():
-    word = random.choice(WORD_LIST)
-    print(f"Selected word: {word}")
+    hardcore_mode = request.args.get('hardcore', 'false').lower() == 'true'
+    
+    if hardcore_mode:
+        # Filter hardcore words to only include those in the valid word list
+        valid_hardcore_words = [word for word in HARDCORE_WORDS if word in words]
+        if not valid_hardcore_words:
+            # Fallback to regular words if no valid hardcore words
+            word = random.choice(words)
+            logger.info(f"No valid hardcore words found, using regular word: {word}")
+        else:
+            word = random.choice(valid_hardcore_words)
+            logger.info(f"Selected hardcore word: {word}")
+    else:
+        word = random.choice(words)
+        logger.info(f"Selected word: {word}")
+    
     return jsonify({'word': word})
 
 @app.route('/api/check', methods=['POST'])
@@ -47,7 +70,7 @@ def check_word():
     if not guess.isalpha():
         return jsonify({'error': 'Guess must contain only letters'}), 400
 
-    if guess not in WORD_LIST:
+    if guess not in words:
         print(f"Invalid word: {guess}")  # Debug log
         return jsonify({'error': 'Not in word list'}), 400
 

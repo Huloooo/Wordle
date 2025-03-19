@@ -1,83 +1,58 @@
 import React from 'react';
-import { Box, Button, Grid } from '@mui/material';
+import { Box, Button } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 interface KeyboardProps {
   onKeyPress: (key: string) => void;
-  usedLetters?: { [key: string]: 'correct' | 'present' | 'absent' };
+  usedLetters: { [key: string]: 'correct' | 'present' | 'absent' };
 }
 
-const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, usedLetters = {} }) => {
+const Key = styled(Button)(({ status }: { status?: 'correct' | 'present' | 'absent' }) => ({
+  minWidth: '40px',
+  height: '58px',
+  padding: '0 8px',
+  margin: '0 3px',
+  fontSize: '1.25rem',
+  fontWeight: 'bold',
+  textTransform: 'uppercase',
+  backgroundColor: status === 'correct' ? '#538d4e' :
+                  status === 'present' ? '#b59f3b' :
+                  status === 'absent' ? '#3a3a3c' : '#818384',
+  color: '#ffffff',
+  '&:hover': {
+    backgroundColor: status === 'correct' ? '#4a7c44' :
+                    status === 'present' ? '#a18f35' :
+                    status === 'absent' ? '#2d2d2f' : '#6b6c6d',
+  },
+  fontFamily: '"Press Start 2P", monospace',
+  imageRendering: 'pixelated',
+}));
+
+const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, usedLetters }) => {
   const rows = [
     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
     ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
     ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACKSPACE']
   ];
 
-  const getKeyColor = (key: string) => {
-    const letter = key === 'BACKSPACE' ? 'BACKSPACE' : key;
-    const status = usedLetters[letter];
-    
-    switch (status) {
-      case 'correct':
-        return '#538d4e';
-      case 'present':
-        return '#b59f3b';
-      case 'absent':
-        return '#3a3a3c';
-      default:
-        return '#818384';
-    }
-  };
-
   return (
-    <Box sx={{ mt: 4 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
       {rows.map((row, rowIndex) => (
-        <Grid 
-          container 
-          key={rowIndex} 
-          spacing={1} 
-          justifyContent="center"
-          sx={{ 
-            mb: 1,
-            '&:last-child': { mb: 0 }
-          }}
-        >
+        <Box key={rowIndex} sx={{ display: 'flex', justifyContent: 'center' }}>
           {row.map((key, keyIndex) => (
-            <Grid item key={keyIndex}>
-              <Button
-                variant="contained"
-                onClick={() => onKeyPress(key)}
-                sx={{
-                  width: key === 'ENTER' || key === 'BACKSPACE' ? '65px' : '40px',
-                  height: '58px',
-                  backgroundColor: getKeyColor(key),
-                  color: '#ffffff',
-                  fontSize: key === 'ENTER' || key === 'BACKSPACE' ? '1rem' : '1.2rem',
-                  fontWeight: 'bold',
-                  textTransform: 'none',
-                  '&:hover': {
-                    backgroundColor: getKeyColor(key),
-                    filter: 'brightness(1.1)',
-                  },
-                  imageRendering: 'pixelated',
-                  fontFamily: '"Press Start 2P", monospace',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                  borderRadius: '4px',
-                  border: '2px solid rgba(255,255,255,0.1)',
-                  textShadow: '1px 1px 2px rgba(0,0,0,0.3)',
-                  transition: 'all 0.2s ease-in-out',
-                  padding: '0 8px',
-                  margin: '0 2px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                {key === 'BACKSPACE' ? '⌫' : key}
-              </Button>
-            </Grid>
+            <Key
+              key={keyIndex}
+              onClick={() => onKeyPress(key)}
+              status={usedLetters[key]}
+              sx={{
+                minWidth: key === 'ENTER' || key === 'BACKSPACE' ? '65px' : '40px',
+                fontSize: key === 'ENTER' || key === 'BACKSPACE' ? '0.8rem' : '1.25rem',
+              }}
+            >
+              {key === 'BACKSPACE' ? '⌫' : key}
+            </Key>
           ))}
-        </Grid>
+        </Box>
       ))}
     </Box>
   );

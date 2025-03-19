@@ -1,64 +1,61 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 interface GameTileProps {
   letter: string;
   feedback: string;
   isActive: boolean;
+  shouldShake?: boolean;
 }
 
-const GameTile: React.FC<GameTileProps> = ({ letter, feedback, isActive }) => {
-  const getBackgroundColor = () => {
-    switch (feedback) {
-      case 'correct':
-        return '#538d4e';
-      case 'present':
-        return '#b59f3b';
-      case 'absent':
-        return '#3a3a3c';
-      default:
-        return isActive ? '#121213' : '#2d2d2d';
-    }
-  };
+interface TileProps {
+  feedback: string;
+  isActive: boolean;
+  shouldShake?: boolean;
+}
 
-  const getBorderColor = () => {
-    if (feedback) return 'transparent';
-    return isActive ? '#565758' : '#3a3a3c';
-  };
+const Tile = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'feedback' && prop !== 'isActive' && prop !== 'shouldShake'
+})<TileProps>(({ feedback, isActive, shouldShake }) => ({
+  width: '62px',
+  height: '62px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '2rem',
+  fontWeight: 'bold',
+  textTransform: 'uppercase',
+  backgroundColor: isActive ? 'transparent' : 
+    feedback === 'correct' ? '#538d4e' :
+    feedback === 'present' ? '#b59f3b' :
+    feedback === 'absent' ? '#3a3a3c' : '#121213',
+  border: `2px solid ${isActive ? '#565758' : 'transparent'}`,
+  color: '#ffffff',
+  fontFamily: '"Press Start 2P", monospace',
+  imageRendering: 'pixelated',
+  animation: shouldShake ? 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both' : 'none',
+  '@keyframes shake': {
+    '10%, 90%': {
+      transform: 'translate3d(-1px, 0, 0)',
+    },
+    '20%, 80%': {
+      transform: 'translate3d(2px, 0, 0)',
+    },
+    '30%, 50%, 70%': {
+      transform: 'translate3d(-4px, 0, 0)',
+    },
+    '40%, 60%': {
+      transform: 'translate3d(4px, 0, 0)',
+    },
+  },
+}));
 
+const GameTile: React.FC<GameTileProps> = ({ letter, feedback, isActive, shouldShake }) => {
   return (
-    <Box
-      sx={{
-        width: 62,
-        height: 62,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: getBackgroundColor(),
-        border: `2px solid ${getBorderColor()}`,
-        borderRadius: 1,
-        transition: 'all 0.2s ease-in-out',
-        animation: feedback ? 'flip 0.5s ease-in-out' : 'none',
-        '@keyframes flip': {
-          '0%': { transform: 'scaleY(1)' },
-          '50%': { transform: 'scaleY(0)' },
-          '100%': { transform: 'scaleY(1)' },
-        },
-      }}
-    >
-      <Typography
-        variant="h4"
-        component="div"
-        sx={{
-          color: 'white',
-          fontWeight: 'bold',
-          textTransform: 'uppercase',
-          textShadow: '1px 1px 2px rgba(0,0,0,0.3)',
-        }}
-      >
-        {letter}
-      </Typography>
-    </Box>
+    <Tile feedback={feedback} isActive={isActive} shouldShake={shouldShake}>
+      {letter}
+    </Tile>
   );
 };
 
