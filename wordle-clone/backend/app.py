@@ -117,13 +117,14 @@ def check_word():
 def save_score():
     data = request.get_json()
     score = data.get('score')
-    word = data.get('word')
+    hardcore_mode = data.get('hardcore_mode', False)
     
-    if not score or not word:
-        return jsonify({'error': 'Missing score or word'}), 400
+    if score is None:
+        return jsonify({'error': 'Missing score'}), 400
     
     # Here you would typically save the score to a database
     # For now, we'll just return success
+    logger.info(f"Saved score: {score} (hardcore mode: {hardcore_mode})")
     return jsonify({'success': True})
 
 if __name__ == '__main__':

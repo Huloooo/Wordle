@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Box, Container, Typography, Grid, Button, Alert, Paper, FormControlLabel } from '@mui/material';
 import GameTile from './GameTile';
 import Keyboard from './Keyboard';
@@ -53,7 +53,7 @@ const GameBoard: React.FC = () => {
   });
   const [volume, setVolume] = useState(0.5); // Default volume at 50%
 
-  const handleKeyPress = async (key: string) => {
+  const handleKeyPress = useCallback(async (key: string) => {
     if (gameState.gameOver) return;
 
     setSoundState(prev => ({ ...prev, playKeyPress: true }));
@@ -174,7 +174,7 @@ const GameBoard: React.FC = () => {
         shouldShake: false
       }));
     }
-  };
+  }, [gameState, setGameState, setSoundState, setShowConfetti]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -210,23 +210,6 @@ const GameBoard: React.FC = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  const updateUsedLetters = (guess: string, feedback: string[]) => {
-    const newUsedLetters = { ...gameState.usedLetters };
-    guess.split('').forEach((letter, index) => {
-      const currentStatus = newUsedLetters[letter];
-      const newStatus = feedback[index];
-      
-      // Only update if the new status is better than the current one
-      if (!currentStatus || 
-          (currentStatus === 'absent' && newStatus !== 'absent') ||
-          (currentStatus === 'present' && newStatus === 'correct')) {
-        newUsedLetters[letter] = newStatus as 'correct' | 'present' | 'absent';
-      }
-    });
-    
-    setGameState((prev: GameState) => ({ ...prev, usedLetters: newUsedLetters }));
-  };
 
   const handleHardcoreModeChange = async (value: boolean) => {
     console.log('Toggling hardcore mode to:', value);
