@@ -1,114 +1,73 @@
 # Wordle Clone
 
-A feature-rich Wordle clone built with React and Flask, featuring additional game modes and modern UI elements.
+A modern implementation of the popular word game Wordle, built with React and Flask.
 
 ## Features
 
 - Classic Wordle gameplay
-- Emoji-Only Wordle mode
-- Hardcore Mode
-- Haptic & Sound Effects
-- Themed Puzzles
-- AI-powered Hints
-- Dynamic Themes (including retro pixel art)
-- Animated Letter Tiles
-- Gradient Backgrounds
-- Voice Input Support
+- Hardcore mode with stricter rules
+- Modern, responsive UI
+- Keyboard support
+- Color-coded feedback
+- Score tracking
 
-## Prerequisites
+## Tech Stack
 
-- Python 3.8+
-- Node.js 14+
+- Frontend: React with TypeScript
+- Backend: Flask (Python)
+- Styling: Material-UI
+- State Management: React Hooks
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v14 or higher)
+- Python 3.8 or higher
 - npm or yarn
-- Firebase account and credentials
 
-## Setup
+### Installation
 
-### Backend Setup
+1. Clone the repository:
+```bash
+git clone git@github.com:Huloooo/Wordle.git
+cd Wordle
+```
 
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   ```
+2. Set up the backend:
+```bash
+cd wordle-clone/backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+python app.py
+```
 
-2. Create and activate a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+3. Set up the frontend:
+```bash
+cd wordle-clone/frontend
+npm install
+npm start
+```
 
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+The game will be available at:
+- Frontend: http://localhost:3000
+- Backend: http://localhost:5001
 
-4. Create a `.env` file in the backend directory with your Firebase credentials:
-   ```
-   FIREBASE_CREDENTIALS_PATH=path/to/your/firebase-credentials.json
-   FLASK_ENV=development
-   FLASK_APP=app.py
-   ```
+## Game Rules
 
-5. Start the Flask server:
-   ```bash
-   python app.py
-   ```
-
-### Frontend Setup
-
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the development server:
-   ```bash
-   npm start
-   ```
-
-## Usage
-
-1. Open your browser and navigate to `http://localhost:3000`
-2. Start playing Wordle!
-3. Use the keyboard to input letters
-4. Press Enter to submit your guess
-5. Use Backspace to delete letters
-
-## Additional Features
-
-### Emoji-Only Mode
-- Toggle emoji-only mode in the settings
-- Words are replaced with emoji combinations
-- Perfect for visual learners
+1. You have 6 attempts to guess the 5-letter word
+2. After each guess, you get color-coded feedback:
+   - Green: Correct letter in correct position
+   - Yellow: Correct letter in wrong position
+   - Gray: Letter not in the word
 
 ### Hardcore Mode
-- Must use revealed letters in subsequent guesses
-- More challenging gameplay
-- Toggle in settings
 
-### Voice Input
-- Click the microphone icon to enable voice input
-- Speak your guess instead of typing
-- Works with most modern browsers
-
-### AI Hints
-- Get up to 3 hints per word
-- AI analyzes your previous guesses
-- Provides strategic suggestions
+In hardcore mode, you must:
+- Use correct letters in their correct positions
+- Use all revealed letters in subsequent guesses
 
 ## Contributing
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details. 
+Feel free to submit issues and enhancement requests! 
